@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediction Result</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff;
+            text-align: center;
+            padding: 20px;
+            max-width: 700px;
+            margin: 20px auto;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .result {
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        .green {
+            color: green;
+        }
+
+        .red {
+            color: red;
+        }
+
+        .image-box {
+            margin-top: 30px;
+            margin-bottom: 40px;
+        }
+
+        img {
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            max-width: 100%;
+            height: auto;
+        }
+
+        .download-btn {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .download-btn:hover {
+            background-color: #45a049;
+        }
+
+        a.back-link {
+            background-color: #008CBA;
+            margin-top: 40px;
+        }
+
+        a.back-link:hover {
+            background-color: #007bb5;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Prediction Result</h2>
+
+    <p class="result {{ structured_result.class }}">{{ structured_result.text }}</p>
+
+    {% if combined_score %}
+        <h3>Combined Confidence Score</h3>
+        <div style="margin: 10px auto; width: 100%; max-width: 400px; background: #eee; border-radius: 10px;">
+            <div style="width: '{{ combined_score }}%'; background: #4CAF50; color: white; padding: 10px 0; border-radius: 10px;">
+                {{ combined_score }}%
+            </div>
+        </div>
+    {% endif %}
+
+    {% if structured_result %}
+        <h3>Structured Model Confidence</h3>
+        <div style="margin: 10px auto; width: 100%; max-width: 400px; background: #ccc; border-radius: 10px;">
+            <div :style="{ width: structured_result.score + '%' }" style="background: #2196F3; color: white; padding: 10px 0; border-radius: 10px;">
+                {{ structured_result.score }}%
+            </div>
+        </div>
+    {% endif %}
+
+    {% if image_result %}
+        <h3>Image Prediction(s)</h3>
+        {% for item in image_result %}
+            <div class="image-box">
+                <p class="result {{ item.color }}">{{ item.label }}</p>
+                <div style="margin: 10px auto; width: 100%; max-width: 400px; background: #ccc; border-radius: 10px;">
+                    <div style="background: #f44336; color: white; padding: 10px 0; border-radius: 10px;" :style="width: {{ item.score }}%">
+                        {{ item.score }}%
+                    </div>
+                </div>
+                <img src="{{ url_for('static', filename='uploads/' + item.image) }}" alt="Prediction Image">
+                <br>
+                <a class="download-btn" href="{{ url_for('download', filename=item.image) }}">Download Image</a>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <a class="download-btn back-link" href="/">Go back to input form</a>
+
+</body>
+</html>

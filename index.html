@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heart Disease Prediction</title>
+    <style>
+        /* Dark Mode Styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #333;
+            color: #fff;
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s, color 0.3s;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #444;
+            background-color: #555;
+            color: #fff;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+        label {
+            font-weight: bold;
+        }
+        /* Tooltip Styles */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+        }
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: #222;
+            color: #fff;
+            text-align: center;
+            border-radius: 5px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+        /* Animation Styles */
+        .animate {
+            animation: fadeIn 1.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<h2 class="animate">Heart Disease Prediction</h2>
+
+<form method="post" action="/predict" enctype="multipart/form-data">
+    <!-- Age input -->
+    <input type="number" name="age" id="age" placeholder="Age (years)" title="Enter the patient's age in years" required><br>
+
+    <!-- Sex input -->
+    <label class="tooltip">Sex:
+        <span class="tooltiptext">Male (1) or Female (0)</span>
+    </label>
+    <select name="sex" id="sex" title="Select the patient's sex" required>
+        <option value="1">Male</option>
+        <option value="0">Female</option>
+    </select><br>
+
+    <!-- Chest Pain Type input -->
+    <label class="tooltip">Chest Pain Type:
+        <span class="tooltiptext">Choose from typical, atypical, non-anginal, or asymptomatic</span>
+    </label>
+    <select name="cp" id="cp" title="Select the chest pain type" required>
+        <option value="0">Typical Angina</option>
+        <option value="1">Atypical Angina</option>
+        <option value="2">Non-anginal Pain</option>
+        <option value="3">Asymptomatic</option>
+    </select><br>
+
+    <!-- Resting Blood Pressure -->
+    <input type="number" name="trestbps" id="trestbps" placeholder="Resting BP (mm Hg)" title="Enter the patient's resting blood pressure" required><br>
+
+    <!-- Cholesterol -->
+    <input type="number" name="chol" id="chol" placeholder="Cholesterol (mg/dl)" title="Enter the patient's cholesterol level" required><br>
+
+    <!-- Fasting Blood Sugar -->
+    <label class="tooltip">Fasting Blood Sugar &gt; 120 mg/dl:
+        <span class="tooltiptext">Yes (1) or No (0)</span>
+    </label>
+    <select name="fbs" id="fbs" title="Select fasting blood sugar status" required>
+        <option value="1">Yes</option>
+        <option value="0">No</option>
+    </select><br>
+
+    <!-- Resting ECG -->
+    <label class="tooltip">Resting ECG:
+        <span class="tooltiptext">Choose between normal or abnormal ECG</span>
+    </label>
+    <select name="restecg" id="restecg" title="Select the resting ECG type" required>
+        <option value="0">Normal</option>
+        <option value="1">ST-T Abnormality</option>
+        <option value="2">Left Ventricular Hypertrophy</option>
+    </select><br>
+
+    <!-- Max Heart Rate -->
+    <input type="number" name="thalach" id="thalach" placeholder="Max Heart Rate" title="Enter the patient's maximum heart rate achieved" required><br>
+
+    <!-- Exercise Induced Angina -->
+    <label class="tooltip">Exercise Induced Angina:
+        <span class="tooltiptext">Yes (1) or No (0)</span>
+    </label>
+    <select name="exang" id="exang" title="Select exercise induced angina status" required>
+        <option value="1">Yes</option>
+        <option value="0">No</option>
+    </select><br>
+
+    <!-- Oldpeak -->
+    <input type="number" name="oldpeak" id="oldpeak" placeholder="Oldpeak (ST Depression)" step="0.1" title="Enter the depression level of the ST segment" required><br>
+
+    <!-- Slope of Peak Exercise ST Segment -->
+    <label class="tooltip">Slope of the Peak Exercise ST Segment:
+        <span class="tooltiptext">Choose between upsloping, flat, or downsloping</span>
+    </label>
+    <select name="slope" id="slope" title="Select the slope of the peak exercise ST segment" required>
+        <option value="0">Upsloping</option>
+        <option value="1">Flat</option>
+        <option value="2">Downsloping</option>
+    </select><br>
+
+    <!-- Number of Major Vessels -->
+    <label class="tooltip">Number of Major Vessels (0–3):
+        <span class="tooltiptext">Number of major blood vessels colored by fluoroscopy</span>
+    </label>
+    <select name="ca" id="ca" title="Select the number of major vessels colored by fluoroscopy" required>
+        <option value="0">0</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+    </select><br>
+
+    <!-- Thalassemia -->
+    <label class="tooltip">Thalassemia:
+        <span class="tooltiptext">Choose the type of thalassemia defect</span>
+    </label>
+    <select name="thal" id="thal" title="Select the thalassemia type" required>
+        <option value="1">Normal</option>
+        <option value="2">Fixed Defect</option>
+        <option value="3">Reversible Defect</option>
+    </select><br>
+
+    <!-- Upload MRI Image(s) -->
+    <label>Upload MRI Image(s):</label>
+    <input type="file" name="images" accept="image/*" multiple><br><br>
+
+    <!-- Submit Button -->
+    <input type="submit" value="Predict" class="animate">
+</form>
+
+<!-- Sample Data Autofill Button -->
+<button id="autofillBtn" onclick="autofillSampleData()" style="margin-top: 20px;">Autofill Sample Data</button>
+
+<script>
+    // Function to autofill sample patient data
+    function autofillSampleData() {
+        document.getElementById('age').value = 45;
+        document.getElementById('sex').value = 1;  // Male
+        document.getElementById('cp').value = 1;   // Atypical Angina
+        document.getElementById('trestbps').value = 130;
+        document.getElementById('chol').value = 230;
+        document.getElementById('fbs').value = 1;  // Yes
+        document.getElementById('restecg').value = 1;  // ST-T Abnormality
+        document.getElementById('thalach').value = 150;
+        document.getElementById('exang').value = 1;  // Yes
+        document.getElementById('oldpeak').value = 2.5;
+        document.getElementById('slope').value = 1;  // Flat
+        document.getElementById('ca').value = 1;
+        document.getElementById('thal').value = 2;  // Fixed Defect
+    }
+</script>
+
+</body>
+</html>
